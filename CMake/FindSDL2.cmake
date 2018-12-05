@@ -1,0 +1,45 @@
+
+SET(PTHREADS_ROOT "" CACHE PATH "The root of the VRPN_ROOT")
+
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	set(_lib_suffix x64)
+else()
+	set(_lib_suffix x86)
+endif()
+
+
+FIND_PATH(SDL2_INCLUDE_DIR SDL.h
+  PATH_SUFFIXES inc include Frameworks 
+  HINTS
+  ${PROJECT_SOURCE_DIR}/ThirdParty/SDL2
+  )
+MARK_AS_ADVANCED(SDL2_INCLUDE_DIR)
+
+MACRO(FIND_SDL2_LIBRARY MYLIBRARY MYLIBRARYNAME)  
+  FIND_LIBRARY(${MYLIBRARY}
+    NAMES ${MYLIBRARYNAME}
+    PATH_SUFFIXES ${_lib_suffix}  lib/${_lib_suffix} 
+    PATHS
+	${PROJECT_SOURCE_DIR}/ThirdParty/SDL2
+    )
+  MARK_AS_ADVANCED(${MYLIBRARY})
+ENDMACRO(FIND_SDL2_LIBRARY LIBRARY LIBRARYNAME)
+
+
+# Find release (optimized) libs
+
+FIND_SDL2_LIBRARY(SDL2_LIBRARY  SDL2)
+
+
+# Find debug libs
+
+FIND_SDL2_LIBRARY(SDL2_LIBRARY_DEBUG SDL2)
+
+
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(SDL2_SRC_DLL "${PROJECT_SOURCE_DIR}/ThirdParty/SDL2/dll/x64/SDL2.dll" )
+else()
+    set(SDL2_SRC_DLL "${PROJECT_SOURCE_DIR}/ThirdParty/SDL2/dll/x86/SDL2.dll" )
+endif()
